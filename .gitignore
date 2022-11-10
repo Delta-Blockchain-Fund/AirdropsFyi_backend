@@ -2,4 +2,4 @@ node_modules
 build
 .env
 randomToken.json
-sendgrid.env
+sendgrid.env.DS_Store
