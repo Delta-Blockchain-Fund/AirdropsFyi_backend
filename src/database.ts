@@ -1,13 +1,13 @@
-import { Sequelize, Model, DataTypes } from "sequelize";
+import { Sequelize, Model, DataTypes } from 'sequelize';
 
 const sequelize = new Sequelize(
-  process.env.POSTGRES_DB || "postgres",
-  process.env.POSTGRES_USER || "postgres",
+  process.env.POSTGRES_DB || 'postgres',
+  process.env.POSTGRES_USER || 'postgres',
   process.env.POSTGRES_PASSWORD,
   {
-    host: process.env.POSTGRES_HOST || "localhost",
-    dialect: "postgres",
-    port: parseInt(process.env.POSTGRES_PORT || "5432"),
+    host: process.env.POSTGRES_HOST || 'localhost',
+    dialect: 'postgres',
+    port: parseInt(process.env.POSTGRES_PORT || '5432'),
     logging: false,
   }
 );
@@ -15,10 +15,10 @@ const sequelize = new Sequelize(
 sequelize
   .authenticate()
   .then(() => {
-    console.log("Connection has been established successfully.");
+    console.log('Connection has been established successfully.');
   })
   .catch((err: any) => {
-    console.error("Unable to connect to the database:", err);
+    console.error('Unable to connect to the database:', err);
   });
 
 class Token extends Model {
@@ -53,7 +53,7 @@ Token.init(
     },
   },
   {
-    tableName: "tokens",
+    tableName: 'tokens',
     sequelize,
   }
 );
@@ -75,7 +75,7 @@ Wallet.init(
     },
   },
   {
-    tableName: "wallets",
+    tableName: 'wallets',
     sequelize,
   }
 );
@@ -98,7 +98,7 @@ WalletToken.init(
       allowNull: false,
       references: {
         model: Wallet,
-        key: "address",
+        key: 'address',
       },
     },
     tokenName: {
@@ -106,11 +106,11 @@ WalletToken.init(
       allowNull: false,
       references: {
         model: Token,
-        key: "name",
+        key: 'name',
       },
     },
     amount: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
       allowNull: false,
     },
     emailNotified: {
@@ -119,7 +119,7 @@ WalletToken.init(
     },
   },
   {
-    tableName: "wallet_tokens",
+    tableName: 'wallet_tokens',
     sequelize,
   }
 );
@@ -146,26 +146,26 @@ Feedback.init(
     },
   },
   {
-    tableName: "feedback",
+    tableName: 'feedback',
     sequelize,
   }
 );
 
 Token.hasMany(WalletToken, {
-  foreignKey: "tokenName",
-  sourceKey: "name",
+  foreignKey: 'tokenName',
+  sourceKey: 'name',
 });
 WalletToken.belongsTo(Token, {
-  foreignKey: "tokenName",
-  targetKey: "name",
+  foreignKey: 'tokenName',
+  targetKey: 'name',
 });
 Wallet.hasMany(WalletToken, {
-  foreignKey: "walletAddress",
-  sourceKey: "address",
+  foreignKey: 'walletAddress',
+  sourceKey: 'address',
 });
 WalletToken.belongsTo(Wallet, {
-  foreignKey: "walletAddress",
-  targetKey: "address",
+  foreignKey: 'walletAddress',
+  targetKey: 'address',
 });
 
 sequelize

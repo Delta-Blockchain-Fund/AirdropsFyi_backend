@@ -1,9 +1,9 @@
-import express from "express";
-import dotenv from "dotenv";
+import express from 'express';
+import dotenv from 'dotenv';
 dotenv.config();
-import router from "./router";
-import cors from "cors";
-import rateLimit from "express-rate-limit";
+import router from './router';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,7 +14,7 @@ const limiter = rateLimit({
 });
 
 // the middleware for parsing the body of the request
-app.use(express.json());
+app.use(express.json({ limit: '5120mb' }));
 
 // the middleware for allowing cross-origin requests
 app.use(cors());
@@ -23,7 +23,7 @@ app.use(cors());
 app.use(limiter);
 
 // the router
-app.use("/", router);
+app.use('/', router);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
