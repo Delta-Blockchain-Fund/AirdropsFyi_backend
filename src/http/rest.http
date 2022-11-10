@@ -1,0 +1,116 @@
+@url = {{$dotenv LOCAL_URL}}
+# @url = {{$dotenv PRODUCTION_URL}}
+@adminKey = {{ $dotenv ADMIN_KEY }}
+
+
+### Hello world
+GET {{ url }}/
+x-admin-key: {{ adminKey }}
+
+
+### Github actions send all tokens names to check what is new
+POST {{ url }}/check-new-tokens
+x-admin-key: {{ adminKey }}
+Content-Type: application/json
+
+{
+  "tokensNames": ["Rhythm In Fur"]
+}
+
+### Github actions send new tokens one by one to add them to the database
+POST {{ url }}/add-new-token
+x-admin-key: {{ adminKey }}
+Content-Type: application/json
+
+{
+  "name": "Rhythm In Fur",
+  "description": "Sad Alive Handsome Tired However Broken Practice Energy Upward Would",
+  "logoUrl": "https://picsum.photos/200",
+  "claimUrl": "https://picsum.photos/",
+  "symbol": "RIF",
+  "addresses": {
+    "0x9d9ad1c9e6460e52e760a89932f17769e6a06dcc": 804,
+    "0x795fbf2f705f823e2121bdb3007d7cb1338799d9": 220,
+    "0x9c89b5841e2cfd0f0041c9a3660edf37c4d6da72": 608,
+    "0x64b7c519fd2bbb76f9a714c46329ee632a31b36b": 836,
+    "0x51101059b4dc322f1d776743ccd9afba18673043": 228,
+    "0x5c6025487980db75ecee9c84e5df02bb6e745317": 620,
+    "0xa6c708a19a3accc250887ee304781c75a14c7085": 944,
+    "0xc35051f1e701b6533620626eca44882660548703": 393,
+    "0x6bbbffd3217d9e83c10de6f7009e5d02dfc0995c": 784,
+    "0x5b1a897c577ad86cbbd939823f2fe0f72321f8bf": 685
+  }
+}
+
+### frontend searches for all airdrops for a wallet
+GET {{ url }}/airdrops/0x9d9ad1c9e6460e52e760a89932f17769e6a06dcc
+
+### frontend registers a wallet to receive email notifications
+POST {{ url }}/register-wallet
+Content-Type: application/json
+
+{
+  "address": "0x9d9ad1c9e6460e52e760a89932f17769e6a06dcc",
+  "email": "me@maiconmoreira.com",
+  "recaptchaToken": "abcdefg"
+}
+
+### frontend get wallet email
+GET {{ url }}/wallet/0x9d9ad1c9e6460e52e760a89932f17769e6a06dcc
+
+
+### frontend submits a new token to create a pull request in the airdrops repository
+POST {{ url }}/submit-new-token
+Content-Type: application/json
+
+{
+  "name": "Rhythm In Fur 17",
+  "description": "Sad Alive Handsome Tired However Broken Practice Energy Upward Would",
+  "logoUrl": "https://picsum.photos/200",
+  "claimUrl": "https://picsum.photos/",
+  "symbol": "RIF",
+  "addresses": {
+    "0x9d9ad1c9e6460e52e760a89932f17769e6a06dcc": 804,
+    "0x795fbf2f705f823e2121bdb3007d7cb1338799d9": 220,
+    "0x9c89b5841e2cfd0f0041c9a3660edf37c4d6da72": 608,
+    "0x64b7c519fd2bbb76f9a714c46329ee632a31b36b": 836,
+    "0x51101059b4dc322f1d776743ccd9afba18673043": 228,
+    "0x5c6025487980db75ecee9c84e5df02bb6e745317": 620,
+    "0xa6c708a19a3accc250887ee304781c75a14c7085": 944,
+    "0xc35051f1e701b6533620626eca44882660548703": 393,
+    "0x6bbbffd3217d9e83c10de6f7009e5d02dfc0995c": 784,
+    "0x5b1a897c577ad86cbbd939823f2fe0f72321f8bf": 685
+  },
+  "recaptchaToken": "abcdefg"
+}
+
+
+### frontend gets general information of the application
+### how many emails sent
+GET {{ url }}/info/email-sent
+
+### how many airdrops registered
+GET {{ url }}/info/airdrops-registered
+
+### how many subscribers
+GET {{ url }}/info/subscribers
+
+### get every information at once
+GET {{ url }}/info
+
+### get formatted fallery items to show on frontend
+GET {{ url }}/info/gallery-items
+
+### frontend sends feedback about the website
+### GET ALL FEEDBACKS
+GET {{ url }}/feedback
+x-admin-key: {{ adminKey }}
+
+### SEND FEEDBACK
+POST {{ url }}/feedback
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "This website is awesome!"
+}
