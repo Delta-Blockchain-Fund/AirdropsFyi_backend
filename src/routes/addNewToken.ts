@@ -31,10 +31,22 @@ async function addNewToken(req: Request, res: Response) {
 
   // console.log(Object.keys(addresses).map((el) => ({ address: el })));
   // return;
-  const wallets: Wallet[] = await Wallet.bulkCreate(
-    Object.keys(addresses).map((el) => ({ address: el })),
-    { ignoreDuplicates: true }
-  );
+
+  const MAX_ADDRESSES_PER_QUERY = 5000;
+
+  const dbData = Object.keys(addresses).map((el) => ({ address: el }));
+
+  const wallets: Wallet[] = [];
+
+  while (dbData.length > 0) {
+    console.log(`Wallet DbData length: ${dbData.length}`);
+    wallets.push(...(await Wallet.bulkCreate(dbData.splice(0, MAX_ADDRESSES_PER_QUERY), { ignoreDuplicates: true })));
+  }
+
+  // const wallets: Wallet[] = await Wallet.bulkCreate(
+  //   Object.keys(addresses).map((el) => ({ address: el })),
+  //   { ignoreDuplicates: true }
+  // );
 
   //TODO:the code is unoptimised, hence switched to the above block of code
   // for (const address in addresses) {
@@ -47,15 +59,30 @@ async function addNewToken(req: Request, res: Response) {
   // }
 
   // create the walletTokens
-  // const walletTokens: WalletToken[] = [];
-  const walletTokens: WalletToken[] = await WalletToken.bulkCreate(
-    wallets.map((wallet) => ({
-      walletAddress: wallet.get('address'),
-      tokenName: token.get('name'),
-      amount: addresses[wallet.get('address')],
-      emailNotified: false,
-    }))
-  );
+  const walletTokens: WalletToken[] = [];
+
+  const dbFeed = Object.keys(addresses).map((el) => ({
+    walletAddress: el,
+    amount: addresses[el],
+    tokenName: token.get('name'),
+    emailNotified: false,
+  }));
+
+  while (dbFeed.length > 0) {
+    console.log(`WalletToken DbFeed length: ${dbFeed.length}`);
+    walletTokens.push(
+      ...(await WalletToken.bulkCreate(dbFeed.splice(0, MAX_ADDRESSES_PER_QUERY), { ignoreDuplicates: true }))
+    );
+  }
+
+  // const walletTokens: WalletToken[] = await WalletToken.bulkCreate(
+  //   wallets.map((wallet) => ({
+  //     walletAddress: wallet.get('address'),
+  //     tokenName: token.get('name'),
+  //     amount: addresses[wallet.get('address')],
+  //     emailNotified: false,
+  //   }))
+  // );
 
   //TODO:the code is unoptimised, hence switched to the above block of code
   // for (const wallet of wallets) {
@@ -68,7 +95,8 @@ async function addNewToken(req: Request, res: Response) {
   //   walletTokens.push(walletToken);
   // }
 
-  res.json({ token, wallets, walletTokens });
+  // res.json({ token, wallets, walletTokens });
+  res.json({ token });
 
   // notify the wallets
   for (const walletToken of walletTokens) {

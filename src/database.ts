@@ -127,6 +127,7 @@ WalletToken.init(
   {
     tableName: 'wallet_tokens',
     sequelize,
+    indexes: [{ fields: [`walletAddress`] }],
   }
 );
 
